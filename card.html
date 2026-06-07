@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Animated Cart System</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:#f4f4f4;
+  padding:20px;
+}
+
+/* Product Box */
+.products{
+  display:flex;
+  gap:20px;
+  margin-bottom:30px;
+}
+
+.product{
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  width:200px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  text-align:center;
+  transform:scale(1);
+  transition:0.3s;
+}
+
+.product:hover{
+  transform:scale(1.05);
+}
+
+button{
+  background:#28a745;
+  color:white;
+  border:none;
+  padding:8px;
+  width:100%;
+  margin-top:10px;
+  cursor:pointer;
+  border-radius:8px;
+}
+
+/* Cart */
+.cart{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  padding:10px;
+  border-bottom:1px solid #ddd;
+  animation:fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(-10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.remove{
+  background:red;
+  padding:5px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  color:white;
+}
+
+.total{
+  margin-top:15px;
+  font-size:18px;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🍔 Food Products</h2>
+
+<div class="products">
+  <div class="product">
+    <h3>🍕 Pizza</h3>
+    <p>₹200</p>
+    <button onclick="addToCart('Pizza',200)">Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <h3>🍔 Burger</h3>
+    <p>₹120</p>
+    <button onclick="addToCart('Burger',120)">Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <h3>🍜 Noodles</h3>
+    <p>₹90</p>
+    <button onclick="addToCart('Noodles',90)">Add to Cart</button>
+  </div>
+  <div class="product">
+    <h3>Manchurian</h3>
+    <p>₹90</p>
+    <button onclick="addToCart('Manchurian',90)">Add to Cart</button>
+  </div>
+</div>
+
+<h2>🛒 Cart</h2>
+<div class="cart" id="cart"></div>
+
+<div class="total" id="total">Total: ₹0</div>
+
+<script>
+let cart = [];
+let total = 0;
+
+function addToCart(name, price){
+  cart.push({name, price});
+  total += price;
+  renderCart();
+}
+
+function removeItem(index){
+  total -= cart[index].price;
+  cart.splice(index,1);
+  renderCart();
+}
+
+function renderCart(){
+  let cartBox = document.getElementById("cart");
+  cartBox.innerHTML = "";
+
+  cart.forEach((item, index)=>{
+    cartBox.innerHTML += `
+      <div class="cart-item">
+        <span>${item.name} - ₹${item.price}</span>
+        <button class="remove" onclick="removeItem(${index})">Remove</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("total").innerText = "Total: ₹" + total;
+}
+</script>
+
+</body>
+</html>
+v

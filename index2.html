@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3D Food Delivery</title>
+  <script>
+async function loadFoods() {
+    const response = await fetch(
+      "http://localhost:5000/api/foods"
+    );
+
+    const foods = await response.json();
+
+    console.log(foods);
+  }
+loadFoods();
+
+</script>
+
+
+<div id="foodList"></div>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#0f0f0f;
+      color:white;
+      overflow-x:hidden;
+    }
+    .search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-box input {
+    width: 300px;
+    height: 45px;
+    padding: 0 15px;
+    font-size: 18px;
+    border-radius: 25px;
+    border: none;
+}
+
+.search-box button {
+    width: 130px;
+    height: 45px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    background: #FFD700;
+    color: black;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+
+
+    /* NAVBAR */
+
+
+    nav{
+      width:100%;
+      padding:20px 8%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      position:fixed;
+      top:0;
+      z-index:1000;
+      backdrop-filter:blur(10px);
+      background:rgba(0,0,0,0.4);
+    }
+
+    nav h1{
+      color:#ffcc00;
+      font-size:32px;
+    }
+    
+
+    nav ul{
+      
+      display:flex;
+      gap:30px;
+      list-style:none;
+    }
+
+    
+
+    nav ul li{
+      
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    nav ul li:hover{
+      color:#ffcc00;
+    }
+
+    /* HERO */
+
+    .hero{
+      width:100%;
+      min-height:100vh;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:120px 8%;
+      position:relative;
+    }
+    .search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-box input {
+    width: 300px;
+    height: 45px;
+    padding: 0 15px;
+    font-size: 18px;
+    border-radius: 25px;
+    border: none;
+}
+
+.search-box button {
+    width: 130px;
+    height: 45px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    background: #FFD700;
+    color: black;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.search-box button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px gold;
+}
+
+    .hero-text{
+      width:50%;
+    }
+
+    .hero-text h2{
+      font-size:70px;
+      line-height:1.1;
+    }
+
+    .hero-text span{
+      color:#ffcc00;
+    }
+
+    .hero-text p{
+      margin-top:20px;
+      color:#bdbdbd;
+      font-size:18px;
+      line-height:1.7;
+    }
+
+    .buttons{
+      margin-top:40px;
+      display:flex;
+      gap:20px;
+    }
+
+    .btn{
+      padding:15px 35px;
+      border:none;
+      border-radius:40px;
+      font-size:17px;
+      cursor:pointer;
+      transition:0.4s;
+    }
+
+    .order-btn{
+      background:#ffcc00;
+      color:black;
+      font-weight:bold;
+    }
+
+    .order-btn:hover{
+      transform:translateY(-5px);
+    }
+
+    .menu-btn{
+      background:transparent;
+      border:2px solid white;
+      color:white;
+    }
+
+    .menu-btn:hover{
+      background:white;
+      color:black;
+    }
+
+    /* 3D FOOD */
+
+    .food-container{
+      width:40%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      perspective:1000px;
+    }
+
+    .pizza{
+      width:350px;
+      animation:rotate 12s linear infinite;
+      filter:drop-shadow(0 0 30px orange);
+      transition:0.5s;
+    }
+
+    .pizza:hover{
+      transform:scale(1.1) rotateY(20deg);
+    }
+
+    @keyframes rotate{
+      from{
+        transform:rotateY(0deg);
+      }
+      to{
+        transform:rotateY(360deg);
+      }
+    }
+
+    /* CARDS */
+
+    .section-title{
+      text-align:center;
+      font-size:50px;
+      margin-top:40px;
+      color:#ffcc00;
+    }
+    
+    
+
+    .cards{
+      width:100%;
+      padding:80px 8%;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:30px;
+    }
+
+    .card{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:25px;
+      padding:25px;
+      backdrop-filter:blur(10px);
+      transition:0.5s;
+    }
+
+    .card:hover{
+      transform:translateY(-10px);
+      box-shadow:0 0 25px rgba(255,204,0,0.4);
+    }
+
+    .card img{
+      width:100%;
+      height:220px;
+      object-fit:cover;
+      border-radius:20px;
+    }
+
+    .card h3{
+      margin-top:20px;
+      font-size:28px;
+    }
+
+    .card p{
+      color:#bdbdbd;
+      margin-top:10px;
+      line-height:1.6;
+    }
+
+    .price{
+      color:#ffcc00;
+      font-size:24px;
+      margin-top:15px;
+      font-weight:bold;
+    }
+
+    .card button{
+      width:100%;
+      margin-top:20px;
+      padding:14px;
+      border:none;
+      border-radius:15px;
+      background:#ffcc00;
+      font-size:17px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .card button:hover{
+      background:rgb(11, 128, 110);
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width:900px){
+
+      .hero{
+        flex-direction:column;
+        text-align:center;
+      }
+
+      .hero-text{
+        width:100%;
+      }
+
+      .food-container{
+        width:100%;
+        margin-top:50px;
+      }
+
+      .hero-text h2{
+        font-size:50px;
+      }
+
+      nav ul{
+        display:none;
+      }
+
+    }
+
+  </style>
+</head>
+<input type="text" id="search" placeholder="Search food...">
+<button onclick="searchFood()">Search</button>
+
+
+<body></body>
+
+  <!-- NAVBAR -->
+
+  <nav>
+    <h1>Foodie3D</h1>
+    <input type="text" id="animation" placeholder="Search food...">
+<button onclick="searchFood()">Search</button>
+<li><a href="dil.css">Login</a></li>
+  
+
+<div id="foodList"></div>
+
+    <ul>
+      <li>Home</li>
+      <li>Menu</li>
+      <li>Offers</li>
+    
+      <li><a href="login.html">Login</a></li>
+<li><a href="card.html">Cart</a></li>
+<li><a href="checkout.html">Place order</a></a></li>
+<li><a href="offer.html">offer</a></li>
+
+
+
+
+</button>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="hero-text">
+      
+
+<div id="foodList"></div>
+      <h2>
+        Experience Food <span>In 3D</span>
+      </h2>
+
+      <p>
+        Order delicious meals with immersive 3D previews and smooth animations.
+        Explore food before you eat.
+      </p>
+      
+
+<div id="foodList"></div>
+
+      <div class="buttons">
+        <button class="btn order-btn">
+          Order Now
+        </button>
+
+</div>
+<script>
+function goToOrder() {
+    window.location.href = "order.html";
+}
+
+function goToMenu() {
+    window.location.href = "menu.html";
+}
+
+</script>
+<body>
+
+</script>
+
+</script>
+
+
+</body>
+    </div>
+
+    <!-- 3D FOOD -->
+
+    <div class="food-container">
+      <img 
+      class="pizza"
+      src="https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1200&auto=format&fit=crop"
+      alt="">
+    
+    </div>
+    </div>
+  
+
+  </div>
+
+  </div>
+
+</div>
+
+  </section>
+
+  <!-- FOOD SECTION -->
+
+  
+    <h3 id="cartCount">Cart: 0 Items</h3>
+
+<script>
+let cart = [];
+
+function addToCart(id) {
+  cart.push(id);
+
+  document.getElementById("cartCount").innerText =
+    "Cart: " + cart.length + " Items";
+
+  alert("Added To Cart");
+}
+</script>;
+
+</script>
+<script>
+
+</script>
+    Popular Dishes
+  <title>FOOD ITEMS</title>
+
+  <section class="cards">
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200&auto=format&fit=crop">
+
+      <h3>Cheese Pizza</h3>
+
+
+      <button onclick="addtocart(2)">Add To Cart</button>
+
+    
+      <div>
+  
+        <button onclick="removeItem(${index})">Remove</button>
+      </div>
+  
+    
+      <p>
+        Loaded with extra cheese and crispy toppings.
+      </p>
+
+      <div class="price">
+        ₹299
+      </div>
+
+  <!-- Momos -->
+  <div class="card">
+    <img src="https://tse3.mm.bing.net/th/id/OIP.pUNrpKgVc83ycMGuCpSAfQHaHa?pid=Api&P=0&h=180" alt="White sauce Pasta">
+    <h3>Wite Sauce Pasta</h3>
+    <p>₹100</p>
+    <button onclick="addToCart('White Sauce pasta',200)">Add to Cart</button>
+    <button onclick="Remove('White sauce Pasta',160)">Remove</button>
+  </div>
+
+  <!-- Non-Veg Biryani -->
+  <div class="card">
+    <img src="https://tse2.mm.bing.net/th/id/OIP.0csI89pXHQSxumqiZz_tIwHaE8?pid=Api&P=0&h=180" alt="Non-Veg Biryani">
+    <h3>Non-Veg Biryani</h3>
+    <p>₹300</p>
+    <button onclick="addToCart('Non-Veg Biryani',300)">Add to Cart</button>
+    <button onclick="Remove('Non-Veg Biryani',300)">Remove</button>
+  </div>
+
+  
+  <div class="card">
+    <img src="https://tse3.mm.bing.net/th/id/OIP.ZLuyspBtkZbDRqnSxhFbIAHaHa?pid=Api&P=0&h=180" alt="Fry rice">
+    <h3>Fry Rice</h3>
+    <p>₹160</p>
+    <button onclick="addToCart('Fry rice',160)">Add to Cart</button>
+    <button onclick="Remove('Fry rice',160)">Remove</button>
+  </div>
+
+  <!-- Burger -->
+  <div class="card">
+    <img src="https://tse4.mm.bing.net/th/id/OIP.hyP_gNEz3oXJhWHMCBbiTwHaE4?pid=Api&P=0&h=180" alt="Manchurian">
+    <h3>Manchurian</h3>
+    <p>₹150</p>
+    <button onclick="addToCart('Manchurian',150)">Add to Cart</button>
+    <button onclick="Remove('Manchurian',150)">Remove</button>
+  </div>
+   
+</div>
+    
+
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1200&auto=format&fit=crop">
+
+      <h3>Chicken Burger</h3>
+      <button onclick="addtocart(2)">Add To Cart</button>
+      <button onclick="removeItem(${index})">Remove</button>
+
+      <p>
+        Juicy grilled chicken burger with spicy sauce.
+      </p>
+
+      <div class="price">
+        ₹199
+    
+  </style>
+</head>
+
+
+<body>
+
+
+
+
+
+</div>
+
+<!-- Momos -->
+<div class="card">
+  <h3>Momos</h3>
+  <img src="https://tse3.mm.bing.net/th/id/OIP.7pwiJ2us2kQO0UpbMgkmiwHaE7?pid=Api&P=0&h=180" alt="Momos">
+  <p>₹80</p>
+  <button onclick="addToCart('Momos', 80)">Add to Cart</button>
+  <button onclick="removeItem(${index})">Remove</button>
+</div>
+
+<!-- Noodles -->
+<div class="card">
+  <img src="https://www.recipemasters.in/wp-content/uploads/2015/06/Veg-noodles.jpeg" alt="noodles">
+  <h3>Noodles</h3>
+  <p>₹90</p><div class="card">
+    <button onclick="addtocart(2)">Add To Cart</button>
+      <button onclick="removeItem(${index})">Remove</button>
+  <h3>Garlic Maggie</h3>
+  <img src="https://i.ytimg.com/vi/Si9g__EXsKE/maxresdefault.jpg" alt="Garlic Maggie">
+
+  <p>₹60</p>
+  <button onclick="addToCart('Noodles', 90)">Add to Cart</button>
+  <button onclick="removeItem(${index})">Remove</button>
+  
+</div>
+
+
+  <!-- Momos -->
+  <div class="card">
+    <img src="https://tse2.mm.bing.net/th/id/OIP.6Nx_C1m4YCujBiHe48YpHAHaE8?pid=Api&P=0&h=180" alt="Masala Dosa">
+    <h3>Masala Dosa</h3>
+    <p>₹100</p>
+    <button onclick="addToCart('Masala Dosa',200)">Add to Cart</button>
+    <button onclick="Remove('Masala Dosa',200)">Remove</button>
+  </div>
+
+</div>
+
+<h2>🛒 Cart</h2>
+<div id="cart"></div>
+
+<script>
+let cart = [];
+function addToCart(name, price) {
+  cart.push({ name, price });
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function addToCart(name, price) {
+  cart.push({ name, price });
+  renderCart();
+}
+
+function renderCart() {
+  let cartBox = document.getElementById("cart");
+  cartBox.innerHTML = "";
+
+  if (cart.length === 0) {
+    cartBox.innerHTML = "<p>Cart is empty</p>";
+    return;
+    
+    let cart = ["Maggie", "Momos", "Noodles"];
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  renderCart();
+  let cart = [];
+
+function addToCart(item) {
+  cart.push(item);
+  updateCart();
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1); // item remove
+  updateCart();
+}
+}
+
+renderCart();
+  }
+  function placeOrder() {
+  let name = document.getElementById("name").value;
+  let address = document.getElementById("address").value;
+  let phone = document.getElementById("phone").value;
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  let total = 0;
+  cart.forEach(i => total += i.price);
+
+  fetch("http://localhost:5000/order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name,
+      address,
+      phone,
+      items: cart,
+      total
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+    localStorage.removeItem("cart");
+    window.location.href = "success.html";
+  });
+}
+<script>
+function searchFood() {
+    let input = document.getElementById("search").value.toLowerCase();
+
+    let cards = document.querySelectorAll(".food-card");
+
+    cards.forEach(card => {
+        let foodName = card.querySelector("h3").innerText.toLowerCase();
+
+        if (foodName.includes(input)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+</script>
+
+  
+}
+      
